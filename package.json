@@ -1,0 +1,27 @@
+{
+  "name": "goyo-api",
+  "version": "1.0.0",
+  "description": "Goyo API",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polysharp/goyo-api.git"
+  },
+  "author": "Grigor Mouradyan @Polysharp <grigor.mouradyan@polysharp.fr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/polysharp/goyo-api/issues"
+  },
+  "homepage": "https://github.com/polysharp/goyo-api#readme",
+  "dependencies": {
+    "apollo-server": "^2.13.1",
+    "express": "^4.17.1",
+    "graphql": "^15.0.0",
+    "graphql-passport": "^0.6.3",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1"
+  }
+}
