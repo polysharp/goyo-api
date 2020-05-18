@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { ApolloServer } = require('apollo-server');
+const jwt = require('jsonwebtoken');
 
 const { typeDefs, User } = require('./gql');
 const db = require('./db');
@@ -8,10 +9,11 @@ db();
 
 const resolvers = {
 	Query: {
-		users: User.queries.users,
+		me: User.queries.me,
 	},
 	Mutation: {
-		addUser: User.mutations.addUser,
+		signUp: User.mutations.signUp,
+		signIn: User.mutations.signIn,
 	},
 };
 
@@ -20,7 +22,24 @@ const server = new ApolloServer({
 	resolvers,
 	tracing: true,
 	context: ({ req }) => {
-		console.log(req.headers);
+		try {
+			const { authorization } = req.headers;
+			if (authorization) {
+				const parts = authorization.trim().split(' ');
+				if (parts.length === 2 && parts[0] === 'Bearer') {
+					const { id, email } = jwt.decode(parts[1]);
+					return {
+						authorized: true,
+						user: {
+							id,
+							email,
+						},
+					};
+				}
+			}
+		} catch (error) {
+			return { authorized: false };
+		}
 	},
 });
 
