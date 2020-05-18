@@ -20,7 +20,8 @@ const resolvers = {
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	tracing: true,
+	tracing: process.env.NODE_ENV !== 'production',
+	introspection: true,
 	context: ({ req }) => {
 		try {
 			const { authorization } = req.headers;
