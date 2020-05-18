@@ -21,7 +21,7 @@ const signUp = async (_, { user: { email, password } }) => {
 			id: newUser._id,
 			email,
 		},
-		process.env.AUTH_SECRET,
+		process.env.ACCESS_SECRET,
 		{
 			expiresIn: '1d',
 		},
@@ -50,7 +50,7 @@ const signIn = async (_, { user: { email, password } }) => {
 			id: user._id,
 			username: user.email,
 		},
-		process.env.AUTH_SECRET,
+		process.env.ACCESS_SECRET,
 		{
 			expiresIn: '1d',
 		},
