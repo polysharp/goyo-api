@@ -1,13 +1,13 @@
 const User = require('../../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { AuthenticationError } = require('apollo-server');
+const { AuthenticationError, UserInputError } = require('apollo-server');
 
 const signUp = async (_, { user: { email, password } }) => {
 	const userExists = await User.userExists(email);
 
 	if (userExists === true) {
-		throw new Error('Email already taken.');
+		throw new UserInputError('Email already taken.');
 	}
 
 	const hash = await bcrypt.hash(password, 10);
