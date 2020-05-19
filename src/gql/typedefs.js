@@ -4,16 +4,28 @@ const typeDefs = gql`
 	type User {
 		id: ID!
 		email: String!
+		firstName: String!
+		lastName: String!
+		preference: UserPref
 	}
 
-	input AuthPayload {
+	type UserPref {
+		language: String
+		currency: String
+	}
+
+	input SignUpPayload {
 		email: String!
 		password: String!
+		firstName: String!
+		lastName: String!
+		language: String!
+		currency: String!
 	}
 
-	type AuthResponse {
-		user: User!
-		token: String!
+	input SignInPayload {
+		email: String!
+		password: String!
 	}
 
 	type Query {
@@ -21,8 +33,8 @@ const typeDefs = gql`
 	}
 
 	type Mutation {
-		signUp(user: AuthPayload): AuthResponse
-		signIn(user: AuthPayload): AuthResponse
+		signUp(user: SignUpPayload): String!
+		signIn(user: SignInPayload): String!
 	}
 `;
 

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { AuthenticationError, UserInputError } = require('apollo-server');
 
-const signUp = async (_, { user: { email, password } }) => {
+const signUp = async (_, { user: { email, password, firstName, lastName, language, currency } }) => {
 	const userExists = await User.userExists(email);
 
 	if (userExists === true) {
@@ -12,14 +12,17 @@ const signUp = async (_, { user: { email, password } }) => {
 
 	const hash = await bcrypt.hash(password, 10);
 	const newUser = new User({
-		email: email,
+		email: email.toLowerCase(),
 		password: hash,
+		firstName,
+		lastName,
+		language,
+		currency,
 	});
 
 	const token = jwt.sign(
 		{
 			id: newUser._id,
-			email,
 		},
 		process.env.ACCESS_SECRET,
 		{
@@ -29,13 +32,7 @@ const signUp = async (_, { user: { email, password } }) => {
 
 	await newUser.save();
 
-	return {
-		user: {
-			id: newUser._id,
-			email: newUser.email,
-		},
-		token: `Bearer ${token}`,
-	};
+	return `Bearer ${token}`;
 };
 
 const signIn = async (_, { user: { email, password } }) => {
@@ -48,7 +45,6 @@ const signIn = async (_, { user: { email, password } }) => {
 	const token = jwt.sign(
 		{
 			id: user._id,
-			username: user.email,
 		},
 		process.env.ACCESS_SECRET,
 		{
@@ -56,13 +52,7 @@ const signIn = async (_, { user: { email, password } }) => {
 		},
 	);
 
-	return {
-		user: {
-			id: user._id,
-			email: user.email,
-		},
-		token: `Bearer ${token}`,
-	};
+	return `Bearer ${token}`;
 };
 
 module.exports = {

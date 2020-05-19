@@ -28,13 +28,10 @@ const server = new ApolloServer({
 			if (authorization) {
 				const parts = authorization.trim().split(' ');
 				if (parts.length === 2 && parts[0] === 'Bearer') {
-					const { id, email } = jwt.decode(parts[1]);
+					const { id } = jwt.verify(parts[1], process.env.ACCESS_SECRET);
 					return {
 						authorized: true,
-						user: {
-							id,
-							email,
-						},
+						userId: id,
 					};
 				}
 			}

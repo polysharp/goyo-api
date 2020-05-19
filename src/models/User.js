@@ -17,10 +17,29 @@ const UserSchema = mongoose.Schema({
 		trim: true,
 		required: true,
 	},
+	firstName: {
+		type: String,
+		trim: true,
+		required: true,
+	},
+	lastName: {
+		type: String,
+		trim: true,
+		required: true,
+	},
+	language: {
+		type: String,
+		trim: true,
+		required: true,
+	},
+	currency: {
+		type: String,
+		trim: true,
+		required: true,
+	},
 });
 
 UserSchema.statics.userExists = async function (email) {
-	console.log(email);
 	const userExists = await this.model('User').findOne({ email });
 	return userExists ? true : false;
 };
