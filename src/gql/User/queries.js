@@ -9,7 +9,7 @@ const me = async (_, __, { authorized, userId }) => {
 	return {
 		id: user._id,
 		email: user.email,
-		fisrtName: user.fisrtName,
+		firstName: user.firstName,
 		lastName: user.lastName,
 		preference: {
 			language: user.language,
