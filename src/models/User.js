@@ -1,49 +1,31 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+const joigoose = require('joigoose')(mongoose);
+const joi = require('@hapi/joi');
 
-const UserSchema = mongoose.Schema({
-	email: {
-		type: String,
-		trim: true,
-		unique: true,
-		required: true,
-		validate: {
-			validator: validator.isEmail,
-			message: '{VALUE} is not a valid email',
-		},
-	},
-	password: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	firstName: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	lastName: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	language: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	currency: {
-		type: String,
-		trim: true,
-		required: true,
-	},
+const nameRegex = /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/;
+const pwdRegex = /\S+/;
+
+const SignInSchema = joi.object({
+  email: joi.string().email().required(),
+  password: joi.string().min(8).max(255).regex(pwdRegex).required(),
 });
 
-UserSchema.statics.userExists = async function (email) {
-	const userExists = await this.model('User').findOne({ email });
-	return userExists ? true : false;
-};
+const SignUpSchema = joi.object({
+  email: joi.string().email().required(),
+  password: joi.string().min(8).max(255).regex(pwdRegex).required(),
+  firstName: joi.string().regex(nameRegex).required(),
+  lastName: joi.string().regex(nameRegex).required(),
+  language: joi.string().valid('fr-FR', 'en-EN', 'es-ES').required(),
+  currency: joi.string().valid('euro', 'dollar', 'yen').required(),
+});
 
+const UserSchema = new mongoose.Schema(joigoose.convert(SignUpSchema), {
+  timestamps: true,
+});
 const User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+module.exports = {
+  SignInSchema,
+  SignUpSchema,
+  User,
+};
