@@ -44,7 +44,6 @@ app.use((_, res, next) => {
     secure: true,
     maxAge: 1000000000,
     signed: true,
-    sameSite: 'strict',
   };
 
   res.cookie('x-cookie-token', 'zzz', cookieConfig);
