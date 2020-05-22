@@ -3,6 +3,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const { typeDefs, User } = require('./gql');
 const db = require('./db');
@@ -20,9 +21,35 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+app.use((req, res, next) => {
+  // not logged, no cookie => next()
+  // logged, cookie + refresh cookie => check refresh token in db, resign jwt, cookie + refresh cookie
+  // false logged, cookie expired, refresh cookie ok =>
+
+  const cookies = req.signedCookies;
+  console.log(cookies);
+  next();
+});
+
+app.use((_, res, next) => {
+  const cookieConfig = {
+    httpOnly: true,
+    secure: true,
+    maxAge: 1000000000,
+    signed: true,
+    sameSite: 'strict',
+  };
+
+  res.cookie('x-cookie-token', 'zzz', cookieConfig);
+  res.cookie('x-cookie-refresh', 'xxx', cookieConfig);
+  next();
+});
 
 const resolvers = {
   Query: {
