@@ -33,7 +33,8 @@ app.use((req, res, next) => {
   // false logged, cookie expired, refresh cookie ok =>
 
   const cookies = req.signedCookies;
-  console.log(cookies);
+  const cookiess = req.cookies;
+  console.log(cookies, cookiess);
   next();
 });
 
