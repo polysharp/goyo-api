@@ -1,35 +1,35 @@
 {
-	"name": "goyo-api",
-	"version": "1.0.0",
-	"author": "Grigor Mouradyan @Polysharp <grigor.mouradyan@polysharp.fr>",
-	"description": "Goyo API",
-	"license": "MIT",
-	"main": "src/server.js",
-	"scripts": {
-		"start": "node src/server.js",
-		"dev": "nodemon src/server.js",
-		"test": "test"
-	},
-	"dependencies": {
-		"apollo-server": "^2.13.1",
-		"bcryptjs": "^2.4.3",
-		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"graphql": "^15.0.0",
-		"graphql-passport": "^0.6.3",
-		"joigoose": "^7.0.0",
-		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^5.9.14",
-		"nodemon": "^2.0.4",
-		"passport": "^0.4.1",
-		"validator": "^13.0.0"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/polysharp/goyo-api.git"
-	},
-	"bugs": {
-		"url": "https://github.com/polysharp/goyo-api/issues"
-	},
-	"homepage": "https://github.com/polysharp/goyo-api#readme"
+  "name": "goyo-api",
+  "version": "1.0.0",
+  "author": "Grigor Mouradyan @Polysharp <grigor.mouradyan@polysharp.fr>",
+  "description": "Goyo API",
+  "license": "MIT",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "apollo-server": "^2.13.1",
+    "apollo-server-express": "^2.13.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^15.0.0",
+    "graphql-passport": "^0.6.3",
+    "joigoose": "^7.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.14",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polysharp/goyo-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/polysharp/goyo-api/issues"
+  },
+  "homepage": "https://github.com/polysharp/goyo-api#readme"
 }
