@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const { typeDefs, User } = require('./gql');
 const db = require('./db');
@@ -9,6 +10,19 @@ const db = require('./db');
 db();
 
 const app = express();
+
+const whitelist = ['http://localhost:3000', 'https://goyo.netlify.com'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 const resolvers = {
   Query: {
