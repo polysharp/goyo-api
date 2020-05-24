@@ -1,7 +1,7 @@
 const { User } = require('../../models/User');
 
-const me = async (_, __, { authorized, userId }) => {
-  if (!authorized) throw new Error('Access denied.');
+const me = async (_, __, { accessValid, userId }) => {
+  if (!accessValid) throw new Error('Access denied.');
 
   const user = await User.findById(userId, 'id email firstName lastName language currency');
   if (!user) throw new Error('User not found.');

@@ -2,9 +2,12 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config');
+const { COOKIE_NAME, COOKIE_OPTIONS, JWT_NAME, JWT_OPTIONS } = require('../../constants');
+
 const { User, SignUpSchema, SignInSchema } = require('../../models/User');
 
-const signUp = async (_, { user }) => {
+const signUp = async (_, { user }, { res }) => {
   const { error } = SignUpSchema.validate(user, { abortEarly: false });
   if (error) {
     throw new UserInputError('SignUp Error', { errors: error.details });
@@ -29,22 +32,29 @@ const signUp = async (_, { user }) => {
     currency: user.currency,
   });
 
-  const token = jwt.sign(
+  await newUser.save();
+
+  const accessToken = jwt.sign(
     {
       id: newUser._id,
     },
-    process.env.ACCESS_SECRET,
-    {
-      expiresIn: '1d',
-    }
+    ACCESS_SECRET,
+    JWT_OPTIONS.forAccessToken
   );
 
-  await newUser.save();
+  const refreshToken = jwt.sign(
+    {
+      id: newUser._id,
+    },
+    REFRESH_SECRET,
+    JWT_OPTIONS.forRefreshToken
+  );
 
-  return `Bearer ${token}`;
+  res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+  return `Bearer ${accessToken}`;
 };
 
-const signIn = async (_, { user }) => {
+const signIn = async (_, { user }, { res }) => {
   const { error } = SignInSchema.validate(user, { abortEarly: false });
   if (error) {
     throw new UserInputError('SignIn Error', { errors: error.details });
@@ -56,17 +66,24 @@ const signIn = async (_, { user }) => {
   const pwdMatch = await bcrypt.compare(user.password, dbUser.password);
   if (pwdMatch === false) throw new AuthenticationError('Wrong email or password');
 
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     {
       id: dbUser._id,
     },
-    process.env.ACCESS_SECRET,
-    {
-      expiresIn: '1d',
-    }
+    ACCESS_SECRET,
+    JWT_OPTIONS.forAccessToken
   );
 
-  return `Bearer ${token}`;
+  const refreshToken = jwt.sign(
+    {
+      id: dbUser._id,
+    },
+    REFRESH_SECRET,
+    JWT_OPTIONS.forRefreshToken
+  );
+
+  res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+  return `Bearer ${accessToken}`;
 };
 
 module.exports = {

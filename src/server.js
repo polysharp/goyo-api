@@ -25,23 +25,7 @@ const server = new ApolloServer({
   resolvers,
   tracing: process.env.NODE_ENV !== 'production',
   introspection: true,
-  context: ({ req }) => {
-    // try {
-    //   const { authorization } = req.headers;
-    //   if (authorization) {
-    //     const parts = authorization.trim().split(' ');
-    //     if (parts.length === 2 && parts[0] === 'Bearer') {
-    //       const { id } = jwt.verify(parts[1], process.env.ACCESS_SECRET);
-    //       return {
-    //         authorized: true,
-    //         userId: id,
-    //       };
-    //     }
-    //   }
-    // } catch (error) {
-    //   return { authorized: false };
-    // }
-  },
+  context: ({ req, res }) => ({ ...req.user, res }),
 });
 
 server.applyMiddleware({ app, path: '/', cors: false });

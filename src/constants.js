@@ -21,10 +21,14 @@ const COOKIE_OPTIONS = Object.freeze({
   maxAge: NODE_ENV === 'production' ? 86400000 : 1800000,
 });
 
-const JWT_NAME = 'x-auth-token';
+const JWT_NAME = 'authorization';
 const JWT_OPTIONS = Object.freeze({
-  maxAge: NODE_ENV === 'production' ? 21600000 : 180000,
-  audience: '',
+  forAccessToken: {
+    expiresIn: NODE_ENV === 'production' ? 21600000 : 180000,
+  },
+  forRefreshToken: {
+    expiresIn: NODE_ENV === 'production' ? 21600000 : 180000,
+  },
 });
 
 module.exports = {
