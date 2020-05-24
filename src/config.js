@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || 'production';
 
 const MONGO_DB_URI = process.env.MONGO_DB_URI || 'mongodb://localhost:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'goyo';
