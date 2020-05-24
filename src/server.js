@@ -5,7 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const { CORS_OPTIONS } = require('./constants');
-const { COOKIE_SECRET } = require('./config');
+const { NODE_ENV, COOKIE_SECRET } = require('./config');
 
 const db = require('./db');
 const { authMiddleware } = require('./middlewares');
@@ -47,5 +47,5 @@ const server = new ApolloServer({
 server.applyMiddleware({ app, path: '/', cors: false });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`🚀  Server ready`);
+  console.log(`🚀 Server ready, running as ${NODE_ENV}`);
 });
