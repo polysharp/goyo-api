@@ -14,6 +14,11 @@ const typeDefs = gql`
     currency: String
   }
 
+  type AuthResponse {
+    token: String!
+    expiresIn: Int!
+  }
+
   input SignUpPayload {
     email: String!
     password: String!
@@ -30,12 +35,12 @@ const typeDefs = gql`
 
   type Query {
     me: User
-    test: String
+    refresh: AuthResponse!
   }
 
   type Mutation {
-    signUp(user: SignUpPayload): String!
-    signIn(user: SignInPayload): String!
+    signUp(user: SignUpPayload): AuthResponse!
+    signIn(user: SignInPayload): AuthResponse!
   }
 `;
 

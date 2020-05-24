@@ -1,5 +1,5 @@
 const { REFRESH_SECRET, ACCESS_SECRET } = require('../config');
-const { COOKIE_NAME, JWT_NAME } = require('../constants');
+const { COOKIE_NAME } = require('../constants');
 const jwt = require('jsonwebtoken');
 
 const verifyJwt = (token, secret) => {

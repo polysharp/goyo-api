@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config');
-const { COOKIE_NAME, COOKIE_OPTIONS, JWT_NAME, JWT_OPTIONS } = require('../../constants');
+const { COOKIE_NAME, COOKIE_OPTIONS, JWT_OPTIONS } = require('../../constants');
 
 const { User, SignUpSchema, SignInSchema } = require('../../models/User');
 
@@ -51,7 +51,10 @@ const signUp = async (_, { user }, { res }) => {
   );
 
   res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-  return `Bearer ${accessToken}`;
+  return {
+    token: `Bearer ${accessToken}`,
+    expiresIn: JWT_OPTIONS.forAccessToken.expiresIn * 1000,
+  };
 };
 
 const signIn = async (_, { user }, { res }) => {
@@ -83,7 +86,10 @@ const signIn = async (_, { user }, { res }) => {
   );
 
   res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-  return `Bearer ${accessToken}`;
+  return {
+    token: `Bearer ${accessToken}`,
+    expiresIn: JWT_OPTIONS.forAccessToken.expiresIn * 1000,
+  };
 };
 
 module.exports = {

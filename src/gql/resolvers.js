@@ -3,7 +3,7 @@ const User = require('./User');
 const resolvers = {
   Query: {
     me: User.queries.me,
-    test: () => 'Hello',
+    refresh: User.queries.refresh,
   },
   Mutation: {
     signUp: User.mutations.signUp,
