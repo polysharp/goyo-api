@@ -1,3 +1,5 @@
+const { NODE_ENV } = require('./config');
+
 const CORS_WHITELIST = ['http://localhost:3000', 'https://goyo.netlify.app'];
 
 const CORS_OPTIONS = Object.freeze({
@@ -14,14 +16,14 @@ const CORS_OPTIONS = Object.freeze({
 const COOKIE_NAME = 'x-refresh-cookie';
 const COOKIE_OPTIONS = Object.freeze({
   httpOnly: true,
-  secure: false, // DISABLE WHEN USING HTTP AND NOT HTTPS
+  secure: NODE_ENV === 'production',
   signed: true,
-  maxAge: 86400000,
+  maxAge: NODE_ENV === 'production' ? 86400000 : 1800000,
 });
 
 const JWT_NAME = 'x-auth-token';
 const JWT_OPTIONS = Object.freeze({
-  expiration: '',
+  maxAge: NODE_ENV === 'production' ? 21600000 : 180000,
   audience: '',
 });
 
