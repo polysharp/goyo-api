@@ -9,7 +9,7 @@ const { COOKIE_SECRET } = require('./config');
 
 const db = require('./db');
 const { authMiddleware } = require('./middlewares');
-const { typeDefs, User } = require('./gql');
+const { typeDefs, resolvers } = require('./gql');
 
 db();
 
@@ -19,16 +19,6 @@ app.use(cors(CORS_OPTIONS));
 app.use(cookieParser(COOKIE_SECRET));
 
 app.use(authMiddleware);
-
-const resolvers = {
-  Query: {
-    me: User.queries.me,
-  },
-  Mutation: {
-    signUp: User.mutations.signUp,
-    signIn: User.mutations.signIn,
-  },
-};
 
 const server = new ApolloServer({
   typeDefs,

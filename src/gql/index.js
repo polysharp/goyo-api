@@ -1,4 +1,4 @@
 module.exports = {
-	typeDefs: require('./typedefs'),
-	User: require('./User'),
+  typeDefs: require('./typeDefs'),
+  resolvers: require('./resolvers'),
 };
