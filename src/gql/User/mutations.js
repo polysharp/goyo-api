@@ -1,7 +1,6 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const joi = require('@hapi/joi');
 
 const { User, SignUpSchema, SignInSchema } = require('../../models/User');
 

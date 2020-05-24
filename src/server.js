@@ -8,6 +8,12 @@ const cookieParser = require('cookie-parser');
 const { typeDefs, User } = require('./gql');
 const db = require('./db');
 
+const cookieConfig = {
+  httpOnly: true,
+  secure: true,
+  signed: true,
+};
+
 db();
 
 const app = express();
@@ -28,27 +34,55 @@ app.use(cors(corsOptions));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use((req, res, next) => {
-  // not logged, no cookie => next()
-  // logged, cookie + refresh cookie => check refresh token in db, resign jwt, cookie + refresh cookie
-  // false logged, cookie expired, refresh cookie ok =>
+  try {
+    const tokenCookie = req.signedCookies['x-cookie-token'];
+    const refreshCookie = req.signedCookies['x-cookie-refresh-token'];
 
-  const cookies = req.signedCookies;
-  const cookiess = req.cookies;
-  console.log(cookies, cookiess);
-  next();
-});
+    if (refreshCookie && tokenCookie) {
+      const { id: tokenId } = jwt.verify(tokenCookie, process.env.ACCESS_SECRET);
+      const { id: refreshId } = jwt.verify(refreshCookie, process.env.REFRESH_SECRET);
 
-app.use((_, res, next) => {
-  const cookieConfig = {
-    httpOnly: true,
-    secure: true,
-    maxAge: 1000000000,
-    signed: true,
-  };
+      const token = jwt.sign(
+        {
+          id: tokenId,
+        },
+        process.env.ACCESS_SECRET,
+        {
+          expiresIn: '1d',
+        }
+      );
+      const refresh = jwt.sign(
+        {
+          id: refreshId,
+        },
+        process.env.REFRESH_SECRET,
+        {
+          expiresIn: '7d',
+        }
+      );
 
-  res.cookie('x-cookie-token', 'zzz', cookieConfig);
-  res.cookie('x-cookie-refresh', 'xxx', cookieConfig);
-  next();
+      res.cookie('x-cookie-token', token, { ...cookieConfig, maxAge: 86400000 });
+      res.cookie('x-cookie-refresh-token', refresh, { ...cookieConfig, maxAge: 604800000 });
+
+      req.authorized = true;
+    }
+
+    if (refreshCookie === undefined) {
+      req.authorized = false;
+    }
+
+    if (tokenCookie === undefined && refreshCookie) {
+      req.authorized = true;
+    }
+
+    if (refreshCookie === false || tokenCookie === false) {
+      req.authorized = false;
+    }
+    next();
+  } catch (error) {
+    req.authorized = false;
+    next();
+  }
 });
 
 const resolvers = {
