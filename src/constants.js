@@ -28,14 +28,14 @@ const EXPIRATION_COOKIE_NAME = 'x-expiration-cookie';
 const COOKIE_OPTIONS = Object.freeze({
   auth: {
     httpOnly: true,
-    secure: NODE_ENV === 'production',
+    secure: false,
     signed: true,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
     domain: NODE_ENV === 'production' ? 'goyo.netlify.app' : 'localhost',
   },
   fake: {
     httpOnly: false,
-    secure: NODE_ENV === 'production',
+    secure: false,
     signed: false,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
     domain: NODE_ENV === 'production' ? 'goyo.netlify.app' : 'localhost',
