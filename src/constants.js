@@ -1,6 +1,6 @@
 const { NODE_ENV } = require('./config');
 
-const FRONT_DOMAIN = ['https://goyo.netlify.app'];
+const FRONT_DOMAIN = ['https://goyo.netlify.app', 'http://localhost:3000'];
 const DEVELOPMENT_DOMAIN = ['http://localhost:3000'];
 
 const CORS_OPTIONS = Object.freeze({
