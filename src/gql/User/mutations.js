@@ -3,7 +3,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config');
-const { COOKIE_NAME, COOKIE_OPTIONS, JWT_OPTIONS } = require('../../constants');
+const {
+  ACCESS_COOKIE_NAME,
+  EXPIRATION_COOKIE_NAME,
+  COOKIE_OPTIONS,
+  JWT_OPTIONS,
+} = require('../../constants');
 
 const { User, SignUpSchema, SignInSchema } = require('../../models/User');
 
@@ -39,22 +44,13 @@ const signUp = async (_, { user }, { res }) => {
       id: newUser._id,
     },
     ACCESS_SECRET,
-    JWT_OPTIONS.forAccessToken
+    JWT_OPTIONS
   );
 
-  const refreshToken = jwt.sign(
-    {
-      id: newUser._id,
-    },
-    REFRESH_SECRET,
-    JWT_OPTIONS.forRefreshToken
-  );
+  res.cookie(ACCESS_COOKIE_NAME, accessToken, COOKIE_OPTIONS.auth);
+  res.cookie(EXPIRATION_COOKIE_NAME, COOKIE_OPTIONS.auth.maxAge, COOKIE_OPTIONS.fake);
 
-  res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-  return {
-    token: `Bearer ${accessToken}`,
-    expiresIn: JWT_OPTIONS.forAccessToken.expiresIn * 1000,
-  };
+  return true;
 };
 
 const signIn = async (_, { user }, { res }) => {
@@ -74,22 +70,13 @@ const signIn = async (_, { user }, { res }) => {
       id: dbUser._id,
     },
     ACCESS_SECRET,
-    JWT_OPTIONS.forAccessToken
+    JWT_OPTIONS
   );
 
-  const refreshToken = jwt.sign(
-    {
-      id: dbUser._id,
-    },
-    REFRESH_SECRET,
-    JWT_OPTIONS.forRefreshToken
-  );
+  res.cookie(ACCESS_COOKIE_NAME, accessToken, COOKIE_OPTIONS.auth);
+  res.cookie(EXPIRATION_COOKIE_NAME, COOKIE_OPTIONS.auth.maxAge, COOKIE_OPTIONS.fake);
 
-  res.cookie(COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-  return {
-    token: `Bearer ${accessToken}`,
-    expiresIn: JWT_OPTIONS.forAccessToken.expiresIn * 1000,
-  };
+  return true;
 };
 
 module.exports = {

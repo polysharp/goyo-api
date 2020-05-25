@@ -22,26 +22,32 @@ const CORS_OPTIONS = Object.freeze({
   credentials: true,
 });
 
-const COOKIE_NAME = 'x-refresh-cookie';
+const ACCESS_COOKIE_NAME = 'x-auth-cookie';
+const EXPIRATION_COOKIE_NAME = 'x-expiration-cookie';
+
 const COOKIE_OPTIONS = Object.freeze({
-  httpOnly: true,
-  secure: NODE_ENV === 'production',
-  signed: true,
-  maxAge: NODE_ENV === 'production' ? 7 * 24 * 60 * 60 * 1000 : 60 * 1000,
+  auth: {
+    httpOnly: true,
+    secure: NODE_ENV === 'production',
+    signed: true,
+    maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
+  },
+  fake: {
+    httpOnly: false,
+    secure: NODE_ENV === 'production',
+    signed: false,
+    maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
+  },
 });
 
 const JWT_OPTIONS = Object.freeze({
-  forAccessToken: {
-    expiresIn: NODE_ENV === 'production' ? 24 * 60 * 60 : 30,
-  },
-  forRefreshToken: {
-    expiresIn: NODE_ENV === 'production' ? 7 * 24 * 60 * 60 : 60,
-  },
+  expiresIn: NODE_ENV === 'production' ? 24 * 60 * 60 : 60,
 });
 
 module.exports = {
   CORS_OPTIONS,
-  COOKIE_NAME,
+  ACCESS_COOKIE_NAME,
+  EXPIRATION_COOKIE_NAME,
   COOKIE_OPTIONS,
   JWT_OPTIONS,
 };
