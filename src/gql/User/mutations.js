@@ -2,7 +2,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config');
+const { ACCESS_SECRET } = require('../../config');
 const {
   ACCESS_COOKIE_NAME,
   EXPIRATION_COOKIE_NAME,

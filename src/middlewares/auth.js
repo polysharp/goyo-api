@@ -1,42 +1,31 @@
-const { REFRESH_SECRET, ACCESS_SECRET } = require('../config');
-const { COOKIE_NAME } = require('../constants');
+const { ACCESS_SECRET } = require('../config');
+const { ACCESS_COOKIE_NAME } = require('../constants');
 const jwt = require('jsonwebtoken');
 
 const verifyJwt = (token, secret) => {
   try {
-    const { id } = jwt.verify(token, secret);
-    return { verified: true, id };
+    const { id, iat } = jwt.verify(token, secret);
+    return { verified: true, id, iat };
   } catch (error) {
     console.log(error);
-    return { verified: false, id: null };
+    return { verified: false };
   }
 };
 
 const auth = (req, _, next) => {
   const user = {
-    refreshValid: false,
-    accessValid: false,
-    userId: undefined,
+    authenticated: false,
   };
 
-  const refreshToken = req.signedCookies[COOKIE_NAME];
+  const accessCookie = req.signedCookies[ACCESS_COOKIE_NAME];
 
-  if (refreshToken) {
-    const { verified: refreshVerified, id } = verifyJwt(refreshToken, REFRESH_SECRET);
+  if (accessCookie) {
+    const { verified, id, iat } = verifyJwt(accessCookie, ACCESS_SECRET);
 
-    if (refreshVerified) {
-      user.refreshValid = refreshVerified;
+    if (verified) {
+      user.authenticated = true;
       user.userId = id;
-
-      const { authorization } = req.headers;
-
-      if (authorization) {
-        const parts = authorization.trim().split(' ');
-        if (parts.length === 2 && parts[0] === 'Bearer') {
-          const { verified: accessVerified } = verifyJwt(parts[1], ACCESS_SECRET);
-          user.accessValid = accessVerified;
-        }
-      }
+      user.iat = iat;
     }
   }
 

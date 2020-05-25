@@ -8,7 +8,7 @@ const { CORS_OPTIONS } = require('./constants');
 const { NODE_ENV, COOKIE_SECRET } = require('./config');
 
 const db = require('./db');
-const { authMiddleware } = require('./middlewares');
+const { authMiddleware, refreshMiddleware } = require('./middlewares');
 const { typeDefs, resolvers } = require('./gql');
 
 db();
@@ -18,7 +18,7 @@ const app = express();
 app.use(cors(CORS_OPTIONS));
 app.use(cookieParser(COOKIE_SECRET));
 
-app.use(authMiddleware);
+app.use(authMiddleware, refreshMiddleware);
 
 const server = new ApolloServer({
   typeDefs,
