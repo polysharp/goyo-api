@@ -11,12 +11,22 @@ const db = require('./db');
 const { authMiddleware, refreshMiddleware } = require('./middlewares');
 const { typeDefs, resolvers } = require('./gql');
 
+const requestIp = require('request-ip');
+
 db();
 
 const app = express();
 
 app.use(cors(CORS_OPTIONS));
 app.use(cookieParser(COOKIE_SECRET));
+
+const ipMiddleware = function (req, res, next) {
+  const clientIp = requestIp.getClientIp(req);
+  console.log(clientIp);
+  next();
+};
+
+app.use(ipMiddleware);
 
 app.use(authMiddleware, refreshMiddleware);
 
