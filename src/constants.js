@@ -1,6 +1,6 @@
 const { NODE_ENV } = require('./config');
 
-const FRONT_DOMAIN = ['https://goyo.netlify.app'];
+const FRONT_DOMAIN = ['https://goyo-app.herokuapp.com/'];
 const DEVELOPMENT_DOMAIN = ['http://localhost:3000'];
 
 const CORS_OPTIONS = Object.freeze({
@@ -31,14 +31,12 @@ const COOKIE_OPTIONS = Object.freeze({
     secure: NODE_ENV === 'production',
     signed: true,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-    domain: NODE_ENV === 'production' ? 'netlify.app' : 'localhost',
   },
   fake: {
     httpOnly: false,
     secure: NODE_ENV === 'production',
     signed: false,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-    domain: NODE_ENV === 'production' ? 'netlify.app' : 'localhost',
   },
 });
 
