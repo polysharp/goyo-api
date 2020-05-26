@@ -31,14 +31,14 @@ const COOKIE_OPTIONS = Object.freeze({
     secure: NODE_ENV === 'production',
     signed: true,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-    domain: NODE_ENV === 'production' ? 'goyo-api.herokuapp.com' : 'localhost',
+    domain: NODE_ENV === 'production' ? 'goyo-app.herokuapp.com' : 'localhost',
   },
   fake: {
     httpOnly: false,
     secure: NODE_ENV === 'production',
     signed: false,
     maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-    domain: NODE_ENV === 'production' ? 'goyo-api.herokuapp.com' : 'localhost',
+    domain: NODE_ENV === 'production' ? 'goyo-app.herokuapp.com' : 'localhost',
   },
 });
 
