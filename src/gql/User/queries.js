@@ -1,7 +1,7 @@
 const HTTP_CODES = require('http-status-codes');
 const { User } = require('../../models/User');
 
-const me = async (_, __, { authenticated, userId, res }) => {
+const me = async (_, __, { res, authenticated, userId }) => {
   if (!authenticated) return res.status(HTTP_CODES.UNAUTHORIZED);
 
   const user = await User.findById(userId, 'id email firstName lastName language currency');

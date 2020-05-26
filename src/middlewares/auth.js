@@ -1,11 +1,15 @@
 const { ACCESS_SECRET } = require('../config');
-const { ACCESS_COOKIE_NAME } = require('../constants');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-const verifyJwt = (token, secret) => {
+const verifyCredentials = (token, clientIp, secret) => {
   try {
-    const { id, iat } = jwt.verify(token, secret);
-    return { verified: true, id, iat };
+    const { id, ip, iat } = jwt.verify(token, secret);
+    const ipMatch = bcrypt.compareSync(clientIp, ip);
+
+    if (!ipMatch) return { verified: false };
+
+    return { verified: true, id, ip, iat };
   } catch (error) {
     console.log(error);
     return { verified: false };
@@ -17,15 +21,23 @@ const auth = (req, _, next) => {
     authenticated: false,
   };
 
-  const accessCookie = req.signedCookies[ACCESS_COOKIE_NAME];
+  const bearerToken = req.headers.authorization;
 
-  if (accessCookie) {
-    const { verified, id, iat } = verifyJwt(accessCookie, ACCESS_SECRET);
+  if (bearerToken) {
+    parts = bearerToken.split(' ');
 
-    if (verified) {
-      user.authenticated = true;
-      user.userId = id;
-      user.iat = iat;
+    if (parts.length === 2 && parts[0] === 'Bearer') {
+      const [, token] = parts;
+      if (token.length > 0) {
+        const { verified, id, ip, iat } = verifyCredentials(token, req.clientIp, ACCESS_SECRET);
+
+        if (verified) {
+          user.authenticated = true;
+          user.userId = id;
+          user.iat = iat;
+          user.ip = ip;
+        }
+      }
     }
   }
 

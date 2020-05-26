@@ -3,16 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { ACCESS_SECRET } = require('../../config');
-const {
-  ACCESS_COOKIE_NAME,
-  EXPIRATION_COOKIE_NAME,
-  COOKIE_OPTIONS,
-  JWT_OPTIONS,
-} = require('../../constants');
+const { JWT_OPTIONS } = require('../../constants');
 
 const { User, SignUpSchema, SignInSchema } = require('../../models/User');
 
-const signUp = async (_, { user }, { res }) => {
+const signUp = async (_, { user }, { res, clientIp }) => {
   const { error } = SignUpSchema.validate(user, { abortEarly: false });
   if (error) {
     throw new UserInputError('SignUp Error', { errors: error.details });
@@ -36,24 +31,16 @@ const signUp = async (_, { user }, { res }) => {
     language: user.language,
     currency: user.currency,
   });
-
   await newUser.save();
 
-  const accessToken = jwt.sign(
-    {
-      id: newUser._id,
-    },
-    ACCESS_SECRET,
-    JWT_OPTIONS
-  );
-
-  res.cookie(ACCESS_COOKIE_NAME, accessToken, COOKIE_OPTIONS.auth);
-  res.cookie(EXPIRATION_COOKIE_NAME, COOKIE_OPTIONS.auth.maxAge, COOKIE_OPTIONS.fake);
+  const ipHash = await bcrypt.hash(clientIp, 1);
+  const accessToken = jwt.sign({ id: newUser._id, ip: ipHash }, ACCESS_SECRET, JWT_OPTIONS);
+  res.set('authorization', `Bearer ${accessToken}`);
 
   return true;
 };
 
-const signIn = async (_, { user }, { res }) => {
+const signIn = async (_, { user }, { res, clientIp }) => {
   const { error } = SignInSchema.validate(user, { abortEarly: false });
   if (error) {
     throw new UserInputError('SignIn Error', { errors: error.details });
@@ -65,16 +52,9 @@ const signIn = async (_, { user }, { res }) => {
   const pwdMatch = await bcrypt.compare(user.password, dbUser.password);
   if (pwdMatch === false) throw new AuthenticationError('Wrong email or password');
 
-  const accessToken = jwt.sign(
-    {
-      id: dbUser._id,
-    },
-    ACCESS_SECRET,
-    JWT_OPTIONS
-  );
-
-  res.cookie(ACCESS_COOKIE_NAME, accessToken, COOKIE_OPTIONS.auth);
-  res.cookie(EXPIRATION_COOKIE_NAME, COOKIE_OPTIONS.auth.maxAge, COOKIE_OPTIONS.fake);
+  const ipHash = await bcrypt.hash(clientIp, 1);
+  const accessToken = jwt.sign({ id: dbUser._id, ip: ipHash }, ACCESS_SECRET, JWT_OPTIONS);
+  res.set('authorization', `Bearer ${accessToken}`);
 
   return true;
 };

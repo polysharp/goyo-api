@@ -1,6 +1,6 @@
-const { NODE_ENV } = require('./config');
+const { NODE_ENV, FRONT_DOMAIN_URL } = require('./config');
 
-const FRONT_DOMAIN = [process.env.FRONT_DOMAIN];
+const FRONT_DOMAIN = [FRONT_DOMAIN_URL];
 const DEVELOPMENT_DOMAIN = ['http://localhost:3000'];
 
 const CORS_OPTIONS = Object.freeze({
@@ -20,34 +20,14 @@ const CORS_OPTIONS = Object.freeze({
     }
   },
   credentials: true,
-});
-
-const ACCESS_COOKIE_NAME = 'x-auth-cookie';
-const EXPIRATION_COOKIE_NAME = 'x-expiration-cookie';
-
-const COOKIE_OPTIONS = Object.freeze({
-  auth: {
-    httpOnly: true,
-    secure: NODE_ENV === 'production',
-    signed: true,
-    maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-  },
-  fake: {
-    httpOnly: false,
-    secure: NODE_ENV === 'production',
-    signed: false,
-    maxAge: NODE_ENV === 'production' ? 24 * 60 * 60 * 1000 : 60 * 1000,
-  },
+  exposedHeaders: ['authorization'],
 });
 
 const JWT_OPTIONS = Object.freeze({
-  expiresIn: NODE_ENV === 'production' ? 24 * 60 * 60 : 60,
+  expiresIn: NODE_ENV === 'production' ? '1d' : '15min',
 });
 
 module.exports = {
   CORS_OPTIONS,
-  ACCESS_COOKIE_NAME,
-  EXPIRATION_COOKIE_NAME,
-  COOKIE_OPTIONS,
   JWT_OPTIONS,
 };
