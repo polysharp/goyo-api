@@ -5,6 +5,7 @@ const DEVELOPMENT_DOMAIN = ['http://localhost:3000'];
 
 const CORS_OPTIONS = Object.freeze({
   origin: (origin, cb) => {
+    console.log(origin);
     if (NODE_ENV === 'production') {
       if (FRONT_DOMAIN.indexOf(origin) !== -1) {
         cb(null, true);
