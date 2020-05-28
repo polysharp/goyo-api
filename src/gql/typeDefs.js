@@ -23,6 +23,14 @@ const typeDefs = gql`
     currency: String!
   }
 
+  input UpdateUserPayload {
+    email: String
+    firstName: String
+    lastName: String
+    language: String
+    currency: String
+  }
+
   input SignInPayload {
     email: String!
     password: String!
@@ -35,8 +43,7 @@ const typeDefs = gql`
   type Mutation {
     signUp(user: SignUpPayload): Boolean!
     signIn(user: SignInPayload): Boolean!
-    updateCurrency(currency: String): Boolean!
-    updateLanguage(language: String): Boolean!
+    updateUser(user: UpdateUserPayload): Boolean!
   }
 `;
 
