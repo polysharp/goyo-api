@@ -19,6 +19,14 @@ const SignUpSchema = joi.object({
   currency: joi.string().valid('euro', 'dollar', 'yen').required(),
 });
 
+const UpdateSchema = joi.object({
+  email: joi.string().email(),
+  firstName: joi.string().regex(nameRegex),
+  lastName: joi.string().regex(nameRegex),
+  language: joi.string().valid('fr-FR', 'en-EN', 'es-ES'),
+  currency: joi.string().valid('euro', 'dollar', 'yen'),
+});
+
 const UserSchema = new mongoose.Schema(joigoose.convert(SignUpSchema), {
   timestamps: true,
 });
@@ -27,5 +35,6 @@ const User = mongoose.model('User', UserSchema);
 module.exports = {
   SignInSchema,
   SignUpSchema,
+  UpdateSchema,
   User,
 };
