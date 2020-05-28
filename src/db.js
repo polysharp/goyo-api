@@ -11,6 +11,7 @@ module.exports = async () => {
         useNewUrlParser: true,
         useCreateIndex: true,
         dbName: MONGO_DB_NAME,
+        useFindAndModify: false,
       },
       (error) => {
         if (error) {
