@@ -94,8 +94,34 @@ const updateCurrency = async (_, { currency }, { res, authenticated, userId }) =
   return true;
 };
 
+const updateLanguage = async (_, { language }, { res, authenticated, userId }) => {
+  if (!authenticated) {
+    res.status(HTTP_CODES.UNAUTHORIZED);
+    throw new AuthenticationError('UNAUTHENTICATED');
+  }
+
+  const { error } = joi
+    .string()
+    .valid('fr-FR', 'en-EN', 'es-ES')
+    .required()
+    .validate(language, { abortEarly: false });
+  if (error) {
+    res.status(HTTP_CODES.BAD_REQUEST);
+    throw new ApolloError('Language not permitted', { errors: error.details });
+  }
+
+  const { nModified } = await User.updateOne({ _id: userId }, { language });
+  if (nModified < 1) {
+    res.status(HTTP_CODES.INTERNAL_SERVER_ERROR);
+    throw new ApolloError('Unable to update the language', HTTP_CODES.INTERNAL_SERVER_ERROR);
+  }
+
+  return true;
+};
+
 module.exports = {
   signUp,
   signIn,
   updateCurrency,
+  updateLanguage,
 };
