@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const { ACCESS_SECRET } = require('../../config');
 const { JWT_OPTIONS } = require('../../constants');
+const { formatUser } = require('./helpers');
 
 const { User, SignUpSchema, SignInSchema, UpdateSchema } = require('../../models/User');
 
@@ -80,13 +81,20 @@ const update = async (_, { user }, { res, authenticated, userId }) => {
     throw new ApolloError('User infos not permitted', { errors: error.details });
   }
 
-  const { nModified } = await User.updateOne({ _id: userId }, user);
-  if (nModified < 1) {
-    res.status(HTTP_CODES.INTERNAL_SERVER_ERROR);
-    throw new ApolloError('Unable to update the language', HTTP_CODES.INTERNAL_SERVER_ERROR);
+  if (Object.keys(user).length === 0) {
+    res.status(HTTP_CODES.BAD_REQUEST);
+    throw new ApolloError('User must have at least 1 element, found 0', HTTP_CODES.BAD_REQUEST);
   }
 
-  return true;
+  try {
+    const updatedUser = await User.findByIdAndUpdate({ _id: userId }, user, {
+      select: 'email firstName lastName language currency',
+    });
+    return formatUser(updatedUser);
+  } catch (error) {
+    res.status(HTTP_CODES.INTERNAL_SERVER_ERROR);
+    throw new ApolloError('An unexpected error occured', HTTP_CODES.INTERNAL_SERVER_ERROR);
+  }
 };
 
 module.exports = {

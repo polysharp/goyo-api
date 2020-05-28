@@ -2,7 +2,6 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type User {
-    id: ID
     email: String
     firstName: String
     lastName: String
@@ -43,7 +42,7 @@ const typeDefs = gql`
   type Mutation {
     signUp(user: SignUpPayload): Boolean!
     signIn(user: SignInPayload): Boolean!
-    updateUser(user: UpdateUserPayload): Boolean!
+    updateUser(user: UpdateUserPayload): User!
   }
 `;
 
