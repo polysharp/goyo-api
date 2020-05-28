@@ -35,6 +35,7 @@ const typeDefs = gql`
   type Mutation {
     signUp(user: SignUpPayload): Boolean!
     signIn(user: SignInPayload): Boolean!
+    updateCurrency(email: String, currency: String): Boolean!
   }
 `;
 

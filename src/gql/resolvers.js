@@ -7,6 +7,7 @@ const resolvers = {
   Mutation: {
     signUp: User.mutations.signUp,
     signIn: User.mutations.signIn,
+    updateCurrency: User.mutations.updateCurrency,
   },
 };
 module.exports = resolvers;
