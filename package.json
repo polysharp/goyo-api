@@ -11,7 +11,7 @@
     "test": "test"
   },
   "dependencies": {
-    "apollo-server": "^2.13.1",
+    "apollo-server": "^2.14.2",
     "apollo-server-express": "^2.13.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
