@@ -7,7 +7,7 @@ const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'goyo';
 
 const ACCESS_SECRET = process.env.ACCESS_SECRET || '<your_access_secret>';
 
-const FRONT_DOMAIN_URL = process.env.FRONT_DOMAIN_URL || 'goyo.polysharp.fr';
+const FRONT_DOMAIN_URL = process.env.FRONT_DOMAIN_URL || 'https://polysharp-goyo.netlify.app/';
 
 module.exports = {
   NODE_ENV,
